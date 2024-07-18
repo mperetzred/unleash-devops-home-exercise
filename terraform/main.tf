@@ -184,6 +184,9 @@ resource "aws_ssm_parameter" "s3_user_secret_key" {
   value = aws_iam_access_key.s3_user_key.secret
 }
 
+resource "aws_cloudwatch_log_group" "app_cw" {
+  name = "unleash-devops-home-exercise-cw"
+}
 
 
 # Task Definition for ECS
@@ -207,7 +210,7 @@ resource "aws_ecs_task_definition" "app_task" {
       logDriver = "awslogs"
       options   = {
           "awslogs-create-group": "true",
-          "awslogs-group": "awslogs-wordpress",
+          "awslogs-group": aws_cloudwatch_log_group.app_cw.name,
           "awslogs-region"        = var.aws_region
           "awslogs-stream-prefix" = "ecs"
       }
